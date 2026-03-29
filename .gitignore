@@ -1,0 +1,167 @@
+# ============================================================
+# Sport Tactical AI - .gitignore
+# ============================================================
+
+# -------------------------------------------------------
+# Python
+# -------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.so
+
+# -------------------------------------------------------
+# Virtual Environments
+# -------------------------------------------------------
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# -------------------------------------------------------
+# Jupyter Notebooks
+# -------------------------------------------------------
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# -------------------------------------------------------
+# Model Weights & Checkpoints (large binary files)
+# -------------------------------------------------------
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.bin
+*.h5
+*.hdf5
+*.onnx
+*.tflite
+*.pb
+checkpoints/
+runs/
+
+# -------------------------------------------------------
+# YOLO / Ultralytics Output
+# -------------------------------------------------------
+runs/
+ultralytics/
+
+# -------------------------------------------------------
+# Data Files (raw videos, images, detections, tracks)
+# -------------------------------------------------------
+data/raw_images/
+data/raw_videos/
+data/detections/
+data/tracks/
+data/sequences/
+data/pitch_coords/
+input/*.avi
+input/*.mp4
+input/*.mov
+input/*.mkv
+
+# -------------------------------------------------------
+# Training Data / YOLO Datasets
+# -------------------------------------------------------
+training_yolo/football-players-detection-1/
+
+# -------------------------------------------------------
+# Output / Inference Results
+# -------------------------------------------------------
+output/
+results/
+*.mp4
+*.avi
+*.mov
+
+# -------------------------------------------------------
+# Logs
+# -------------------------------------------------------
+*.log
+logs/
+*.out
+
+# -------------------------------------------------------
+# Archives
+# -------------------------------------------------------
+*.zip
+*.tar.gz
+*.tar
+*.rar
+*.7z
+
+# -------------------------------------------------------
+# IDE & Editor Files
+# -------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# -------------------------------------------------------
+# OS Files
+# -------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# -------------------------------------------------------
+# Environment / Secrets
+# -------------------------------------------------------
+.env
+.env.*
+secrets.yaml
+secrets.json
+
+# -------------------------------------------------------
+# Misc
+# -------------------------------------------------------
+*.tmp
+*.temp
+.cache/
+*.coverage
+.pytest_cache/
+htmlcov/
+
+# -------------------------------------------------------
+# Project-Specific Files (manually excluded)
+# -------------------------------------------------------
+
+# Field images / graphics
+Football Field.jpg
+Football_field.svg.png
+tactical_assistant_architecture.svg
+
+# Utility / one-off scripts
+hard_rename.py
+number_of_image_labels.py
+rename.py
+testing_npz.py
+
+# Notes & planning docs
+what is next for ALEX.txt
+
+# Research Papers
+Research Papers/

@@ -1,0 +1,15 @@
+torch>=2.1
+torchvision
+opencv-python
+ultralytics
+numpy
+scipy
+tqdm
+pyyaml
+scikit-learn
+filterpy
+lap
+pycocotools
+torch-geometric
+umap-learn
+matplotlib

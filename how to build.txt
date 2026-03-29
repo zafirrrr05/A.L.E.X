@@ -1,0 +1,59 @@
+This text file is just to remember how i built this project
+and possibly provide a step by step guide to built it 
+PS: for understanding why we have taken a certain uproach pls refer "README.md"
+
+
+https://www.kaggle.com/datasets/saberghaderi/-dfl-bundesliga-460-mp4-videos-in-30sec-csv
+
+
+STEP 1: Make the file structure
+
+sport_tactical_ai/
+├── README.md
+├── requirements.txt
+├── config.yaml
+├── src/
+│   ├── perception/
+│   │   ├── detector.py
+│   │   └── tracker.py
+│   ├── preprocessing/
+│   │   ├── team_assigner.py
+│   │   └── sequence_builder.py
+│   ├── models/
+│   │   └── team_tactical_net.py
+│   ├── training/
+│   │   └── ssl_train.py
+│   ├── inference/
+│   └── utils/
+└── data/
+    ├── raw_videos/
+    ├── detections/
+    ├── tracks/
+    └── sequences/
+
+
+STEP 2: Download Requirements
+
+torch>=2.1
+torchvision
+opencv-python
+ultralytics
+numpy
+scipy
+tqdm
+pyyaml
+scikit-learn
+filterpy
+lap
+pycocotools
+torch-geometric
+umap-learn
+matplotlib
+
+open folder 'sport_tactical_ai' 
+then open cmd line and enter "code . "
+you are now in Visual Studios
+in a new terminal excetute "pip install -p requirement.txt"
+you have now installed the require libraries for your project
+
+ 
