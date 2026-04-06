@@ -1,0 +1,33 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Action Detection Module — Python Dependencies
+# Install order matters for torch-geometric.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# 1. Core deep learning
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0       # pulled in automatically with torch on most platforms
+
+# 2. Video backbone (X3D pre-trained weights)
+pytorchvideo>=0.1.5
+
+# 3. Graph Neural Networks
+#    torch-geometric requires matching torch + CUDA versions.
+#    See: https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html
+#    Typical install (CUDA 11.8):
+#      pip install torch-geometric
+#      pip install pyg-lib torch-scatter torch-sparse torch-cluster \
+#          -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
+torch-geometric>=2.4.0
+
+# 4. Video / image I/O
+opencv-python>=4.8.0
+
+# 5. Utilities
+numpy>=1.24.0
+tqdm>=4.66.0
+scipy>=1.11.0           # for any future signal processing
+
+# 6. Optional — for dashboard / visualisation (Part 5 §5.13)
+# streamlit>=1.29.0
+# plotly>=5.18.0
