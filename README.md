@@ -46,37 +46,37 @@ ALEX is a production-grade, end-to-end football intelligence platform. Feed it b
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║                         ALEX PIPELINE                           ║
+║                         ALEX PIPELINE                            ║
 ╠══════════════════════════════════════════════════════════════════╣
 ║                                                                  ║
 ║   📹 Broadcast Video  /  📡 Tracking Data                       ║
 ║                    │                                             ║
-║   ┌─────────────────▼─────────────────┐                         ║
-║   │  LAYER 1 · TRACKING               │  YOLOv8 + ByteTrack     ║
-║   │  detector · tracker · homography  │  105×68m pitch coords   ║
-║   └─────────────────┬─────────────────┘                         ║
+║   ┌─────────────────▼─────────────────┐                          ║
+║   │  LAYER 1 · TRACKING               │  YOLOv8 + ByteTrack      ║
+║   │  detector · tracker · homography  │  105×68m pitch coords    ║
+║   └─────────────────┬─────────────────┘                          ║
 ║                     │  Structured Spatial Data                   ║
 ║        ┌────────────┼────────────┐                               ║
 ║        ▼            ▼            ▼                               ║
-║   ┌─────────┐  ┌─────────┐  ┌──────────┐                        ║
+║   ┌─────────┐  ┌─────────┐  ┌──────────┐                         ║
 ║   │ ACTION  │  │FORMATION│  │OFFENSIVE │                         ║
 ║   │DETECTION│  │ANALYSIS │  │PREDICTION│                         ║
-║   │  TAAD   │  │ HDS-SGT │  │xPass/xT  │                        ║
-║   │ + GNN   │  │Graph Tx │  │xReceiver │                        ║
-║   └────┬────┘  └────┬────┘  └────┬─────┘                        ║
+║   │  TAAD   │  │ HDS-SGT │  │xPass/xT  │                         ║
+║   │ + GNN   │  │Graph Tx │  │xReceiver │                         ║
+║   └────┬────┘  └────┬────┘  └────┬─────┘                         ║
 ║        └────────────┼────────────┘                               ║
-║                     ▼                                             ║
+║                     ▼                                            ║
 ║   ┌─────────────────────────────────────┐                        ║
 ║   │  LAYER 6 · TACTICAI                 │  Diffusion Model       ║
 ║   │  Simulate futures → Recommend moves │  500–1000 rollouts     ║
 ║   └─────────────────┬───────────────────┘                        ║
-║                     ▼                                             ║
+║                     ▼                                            ║
 ║   ┌─────────────────────────────────────┐                        ║
 ║   │  LAYER 7 · MLOPS                    │  Prefect + MLflow      ║
 ║   │  FastAPI  ·  Docker  ·  Grafana     │  Prometheus monitoring ║
 ║   └─────────────────┬───────────────────┘                        ║
-║                     ▼                                             ║
-║         🖥️  TACTICAL DASHBOARD  (frontend/)                      ║
+║                     ▼                                            ║
+║         🖥️  TACTICAL DASHBOARD  (frontend/)                     ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -209,191 +209,6 @@ recommender.py    → Orchestrates the loop:
 
 ---
 
-### Layer 6 · MLOps — Production-Grade Infrastructure
-
-> *What separates a research notebook from a real system.*
-
-| Component | Role |
-|---|---|
-| `pipeline.py` | Prefect orchestration: video ingestion → tracking → action detection → formation → offensive → TacticAI → registration. One command. Auto-retry on failure. |
-| `tracking.py` | MLflow / W&B: logs hyperparameters, loss curves, mAP per class, GPU memory, xPass log-loss, xThreat accuracy |
-| `registry.py` | Model registry: promotes best version to "production," version tags, rollback support |
-| `serve/api.py` | FastAPI REST server (see API section below) |
-| `monitoring/` | Prometheus scrapes metrics · Grafana prebuilt dashboard · Latency & mAP alerts |
-
----
-
-## 📁 Project Structure
-
-```
-ALEX/
-│
-├── 📄 README.md
-├── 📄 setup.py
-├── 📄 requirements.txt
-├── 📄 docker-compose.yml
-├── 📄 Makefile
-├── 📄 .gitignore
-├── 📄 .env.example
-│
-├── 📁 data/
-│   ├── 📁 raw/                          # Input video or tracking feeds
-│   ├── 📁 processed/                    # Player tracks, homography outputs, events
-│   └── 📁 samples/                      # Sample match clips for quick testing
-│
-├── 📁 tracking/
-│   ├── 📄 detector.py                   # YOLOv8 player & ball detection
-│   ├── 📄 tracker.py                    # ByteTrack multi-object tracking
-│   ├── 📄 homography.py                 # Camera-to-pitch coordinate mapping
-│   └── 📄 preprocessor.py               # Velocity, acceleration, team inference
-│
-├── 📁 action_detection/
-│   ├── 📄 train.py                      # TAAD + GNN training loop
-│   ├── 📄 evaluate.py                   # mAP per action class
-│   ├── 📁 models/
-│   │   ├── 📄 x3d_backbone.py           # X3D-M 3D CNN visual features
-│   │   ├── 📄 gnn_gamestate.py          # Dynamic EdgeConv game-state graph
-│   │   └── 📄 taad_classifier.py        # Temporal CNN action classifier
-│   └── 📁 utils/
-│       ├── 📄 roi_utils.py              # ROI Align per player bounding box
-│       ├── 📄 graph_builder.py          # Player node + edge construction
-│       └── 📄 tube_smoother.py          # Temporal label smoothing for action tubes
-│
-├── 📁 formation/
-│   ├── 📄 train.py                      # HDS-SGT training loop
-│   ├── 📄 evaluate.py                   # Shape clustering + classification metrics
-│   ├── 📁 models/
-│   │   ├── 📄 spatial_gnn.py            # GCN/GAT for per-frame shape embedding
-│   │   └── 📄 temporal_transformer.py   # Sequence transformer for shape transitions
-│   └── 📁 utils/
-│       ├── 📄 graph_builder.py          # Per-frame tactical graph construction
-│       └── 📄 clustering.py             # GMM / K-Means formation labeling
-│
-├── 📁 offensive/
-│   ├── 📄 xpass_model.py                # Pass success probability model
-│   ├── 📄 xreceiver_model.py            # Intended receiver prediction (softmax)
-│   ├── 📄 xthreat_model.py              # Territorial zone value model
-│   ├── 📄 xthreat_chain.py              # Full possession value chain (xT-chain)
-│   └── 📄 decision_simulator.py         # Best action selector per frame
-│
-├── 📁 tacticai/
-│   ├── 📄 gnn_predictor.py              # Supervised outcome prediction (GNN)
-│   ├── 📄 diffusion_model.py            # Graph-conditioned trajectory diffusion
-│   ├── 📄 recommender.py                # Counterfactual tactical suggestion engine
-│   └── 📄 simulator.py                  # Multi-agent future state rollout
-│
-├── 📁 mlops/
-│   ├── 📄 pipeline.py                   # Prefect end-to-end orchestration
-│   ├── 📄 tracking.py                   # MLflow / W&B experiment logging
-│   ├── 📄 registry.py                   # Model registry (promote/stage/rollback)
-│   ├── 📁 serve/
-│   │   ├── 📄 api.py                    # FastAPI REST endpoints
-│   │   └── 📄 Dockerfile                # Container for serving
-│   └── 📁 monitoring/
-│       ├── 📄 prometheus.yml            # Metrics scrape config
-│       └── 📄 grafana_dashboard.json    # Prebuilt Grafana dashboard
-│
-├── 📁 configs/                          # Hydra YAML — all hyperparameters externalized
-│   ├── 📄 tracking.yaml
-│   ├── 📄 action.yaml
-│   ├── 📄 formation.yaml
-│   ├── 📄 offensive.yaml
-│   └── 📄 tacticai.yaml
-│
-├── 📁 notebooks/
-│   ├── 📄 01_tracking_exploration.ipynb
-│   ├── 📄 02_action_detection.ipynb
-│   ├── 📄 03_formation_analysis.ipynb
-│   ├── 📄 04_offensive_pipeline.ipynb
-│   └── 📄 05_tacticai_simulation.ipynb
-│
-├── 📁 scripts/
-│   ├── 📄 preprocess.py
-│   ├── 📄 run_tracking.sh
-│   └── 📄 train_all.sh
-│
-├── 📁 tests/
-│   ├── 📄 test_action.py
-│   ├── 📄 test_formation.py
-│   ├── 📄 test_offensive.py
-│   ├── 📄 test_tacticai.py
-│   └── 📄 test_api.py
-│
-├── 📁 docs/
-│   ├── 📄 architecture.md
-│   ├── 📄 setup.md
-│   └── 📄 api_reference.md
-│
-└── 📁 frontend/
-    └── 📄 index.html                    # Tactical visualization dashboard (Three.js / Dash)
-```
-
----
-
-## 🔄 Full Data Flow
-
-```
-📹 Broadcast Video  /  📡 Raw Tracking Data
-        │
-        ▼
-  tracking/detector.py          ──→  detect players per frame (YOLOv8)
-        │
-        ▼
-  tracking/tracker.py           ──→  assign consistent player IDs (ByteTrack)
-        │
-        ▼
-  tracking/homography.py        ──→  project to 2D pitch coordinates (105×68m)
-        │
-        ├──────────────────────────────────────────────┐
-        ▼                                              ▼
-  action_detection/             ──→            formation/
-  (TAAD + GNN)                         (HDS-SGT Graph Transformer)
-  Events: pass, shot, tackle           Shape: "4-1-4-1", "3-2-5"
-        │                                              │
-        └──────────────────┬───────────────────────────┘
-                           ▼
-                  offensive/decision_simulator
-                  xPass × ΔxThreat · best action per frame
-                           │
-                           ▼
-                  tacticai/simulator.py
-                  500–1000 generative future rollouts
-                           │
-                           ▼
-                  tacticai/recommender.py
-                  Ranked positional recommendations
-                           │
-                           ▼
-                  mlops/serve/api.py      ──→  REST endpoints
-                           │
-                           ▼
-                  frontend/index.html     ──→  Interactive tactical dashboard
-```
-
----
-
-## 🌐 REST API
-
-ALEX exposes all capabilities as production REST endpoints via FastAPI:
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/track` | Run tracking pipeline on a video clip |
-| `POST` | `/detect_actions` | Run action detection on tracking data |
-| `GET` | `/formation` | Get current tactical shape |
-| `POST` | `/predict_pass` | Get xPass + xThreat for a player state |
-| `GET` | `/best_action` | Best offensive decision at current frame |
-| `POST` | `/simulate_tactic` | Run TacticAI simulation for a positional change |
-| `GET` | `/recommendations` | Get ranked tactical recommendations |
-| `GET` | `/report` | Fetch auto-generated match analysis report |
-
-**Deploy in one command:**
-```bash
-docker-compose up
-```
-
----
-
 ## ⚙️ Configuration
 
 All hyperparameters live as **Hydra YAML files** — never hardcoded in Python.
@@ -457,19 +272,6 @@ frontend/index.html   →  open in browser
 
 ---
 
-## 📓 Notebooks
-
-Five progressive notebooks that double as living documentation:
-
-| Notebook | Purpose |
-|---|---|
-| `01_tracking_exploration.ipynb` | Visualize player tracks, inspect homography quality, check velocity distributions |
-| `02_action_detection.ipynb` | Run training interactively, visualize loss curves, inspect action tube outputs |
-| `03_formation_analysis.ipynb` | Inspect shape embeddings, visualize formation transitions, browse cluster labels |
-| `04_offensive_pipeline.ipynb` | Compute xPass and xThreat for a real match, visualize best decision maps |
-| `05_tacticai_simulation.ipynb` | Demo generative simulation, inspect trajectory samples, view recommendations |
-
----
 
 ## 🧰 Tech Stack
 
